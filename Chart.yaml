@@ -1,0 +1,4 @@
+apiVersion: v2
+name: joltlab
+description: Chart Helm pour tous les microservices Jolt
+version: 0.1.0

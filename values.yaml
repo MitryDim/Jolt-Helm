@@ -1,0 +1,42 @@
+mongo:
+  image: mongo:latest
+  port: 27017
+
+redis:
+  image: redis:latest
+  port: 6379
+
+rabbitmq:
+  image: rabbitmq:3-management
+  port: 5672
+  managementPort: 15672
+  user: user
+  password: password
+
+gateway:
+  image: ghcr.io/Valt1-0/gateway:latest
+  port: 5000
+
+mail:
+  image: ghcr.io/Valt1-0/mail:latest
+  port: 5001
+
+auth:
+  image: ghcr.io/Valt1-0/auth:latest
+  port: 5002
+
+users:
+  image: ghcr.io/Valt1-0/users:latest
+  port: 5003
+
+vehicles:
+  image: ghcr.io/Valt1-0/vehicles:latest
+  port: 5004
+
+maintains:
+  image: ghcr.io/Valt1-0/maintains:latest
+  port: 5005
+
+navigate:
+  image: ghcr.io/Valt1-0/navigate:latest
+  port: 5006
