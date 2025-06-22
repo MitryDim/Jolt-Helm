@@ -34,6 +34,15 @@ helm upgrade jolt-kube jolt-kube/jolt-kube
 helm uninstall jolt-kube
 ```
 
+## Installation avec kubectl (sans Helm)
+
+Générez les manifests puis appliquez-les :
+
+```bash
+helm template jolt-kube . > all.yaml
+kubectl apply -f all.yaml
+```
+
 ## Structure du Chart
 
 - `Chart.yaml` : Métadonnées du chart
