@@ -20,6 +20,19 @@ spec:
             - containerPort: {{ .Values.rabbitmq.managementPort }}
           env:
             - name: RABBITMQ_DEFAULT_USER
-              value: {{ .Values.rabbitmq.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-user
             - name: RABBITMQ_DEFAULT_PASS
-              value: {{ .Values.rabbitmq.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-password
+          volumeMounts:
+            - name: rabbitmq-data
+              mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: rabbitmq-data
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc

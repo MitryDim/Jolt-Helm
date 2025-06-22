@@ -1,25 +1,31 @@
+{{- range .Values.microservices }}
+{{- if .mongoPort }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: mongo-{{ .name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo
+      app: mongo-{{ .name }}
   template:
     metadata:
       labels:
-        app: mongo
+        app: mongo-{{ .name }}
     spec:
       containers:
         - name: mongo
-          image: {{ .Values.mongo.image }}
+          image: {{ $.Values.mongo.image }}
           ports:
-            - containerPort: {{ .Values.mongo.port }}
+            - containerPort: {{ $.Values.mongo.port }}
           volumeMounts:
             - name: mongo-data
               mountPath: /data/db
       volumes:
         - name: mongo-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: mongo-{{ .name }}-pvc
+---
+{{- end }}
+{{- end }}

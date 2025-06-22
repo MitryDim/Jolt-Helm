@@ -17,3 +17,7 @@ spec:
           image: {{ .Values.redis.image }}
           ports:
             - containerPort: {{ .Values.redis.port }}
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-pvc

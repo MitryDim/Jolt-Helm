@@ -1,11 +1,17 @@
+{{- range .Values.microservices }}
+{{- if .mongoPort }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongo-{{ .name }}
 spec:
   selector:
-    app: mongo
+    app: mongo-{{ .name }}
   ports:
-    - protocol: TCP
-      port: 27017
-      targetPort: {{ .Values.mongo.port }}
+    - name: mongo
+      protocol: TCP
+      port: {{ .mongoPort }}
+      targetPort: {{ $.Values.mongo.port }}
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,41 @@
+{{- range .Values.microservices }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: {{ .image }}
+          ports:
+            - containerPort: {{ .port }}
+          env:
+            - name: API_PORT
+              value: "{{ .port }}"
+            {{- if .mongoPort }}
+            - name: MONGODB_URI
+              value: "mongodb://mongo-{{ .name }}:{{ .mongoPort }}/{{ .name }}"
+            {{- end }}
+            {{- /* Variables globales filtrées */}}
+            {{- $global := $.Values.envGlobal }}
+            {{- $needed := .auth | default (list) }}
+            {{- range $global }}
+            {{- if has .name $needed }}
+            {{- toYaml (list .) | nindent 12 }}
+            {{- end }}
+            {{- end }}
+            {{- /* Variables d'env spécifiques */}}
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+---
+{{- end }}

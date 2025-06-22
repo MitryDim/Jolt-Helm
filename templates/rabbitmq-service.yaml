@@ -6,9 +6,11 @@ spec:
   selector:
     app: rabbitmq
   ports:
-    - protocol: TCP
+    - name: amqp
+      protocol: TCP
       port: 5672
       targetPort: {{ .Values.rabbitmq.port }}
-    - protocol: TCP
+    - name: management
+      protocol: TCP
       port: 15672
       targetPort: {{ .Values.rabbitmq.managementPort }}

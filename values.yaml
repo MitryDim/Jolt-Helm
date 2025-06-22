@@ -2,6 +2,166 @@ mongo:
   image: mongo:latest
   port: 27017
 
+envGlobal:
+  - name: JWT_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: auth-secret
+        key: JWT_ACCESS_KEY
+  - name: JWT_REFRESH_KEY
+    valueFrom:
+      secretKeyRef:
+        name: auth-secret
+        key: JWT_REFRESH_KEY
+  - name: MSG_QUEUE_URL
+    valueFrom:
+      secretKeyRef:
+        name: auth-secret
+        key: MSG_QUEUE_URL
+  - name: JWT_ACCESS_EXPIRATION
+    value: "15m"
+  - name: JWT_REFRESH_EXPIRATION
+    value: "7d"
+  - name: MAX_SESSIONS_ALLOWED
+    value: "5"
+  - name: REDIS_URL
+    value: "redis://redis:6379"
+  - name: EXCHANGE_NAME
+    value: "Jolt"
+
+# Values for the microservices, redis, rabbitmq, and mongo deployments
+microservices:
+  - name: gateway
+    image: ghcr.io/Valt1-0/gateway:latest
+    port: 5000
+    mongoPort: 27018
+  - name: auth
+    image: ghcr.io/Valt1-0/auth:latest
+    port: 5002
+    mongoPort: 27019
+    auth:
+      - JWT_ACCESS_KEY
+      - JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRATION
+      - JWT_ACCESS_EXPIRATION
+      - MAX_SESSIONS_ALLOWED
+      - MSG_QUEUE_URL
+      - REDIS_URL
+      - EXCHANGE_NAME
+    env:
+      - name: NOTIFICATION_SERVICE_QUEUE
+        value: "notification_service"
+      - name: USER_SERVICE_QUEUE
+        value: "user_service"
+      - name: AUTH_SERVICE_URL
+        value: "http://localhost:5000/users"
+  - name: users
+    image: ghcr.io/Valt1-0/users:latest
+    port: 5003
+    mongoPort: 27020
+    auth:
+      - JWT_ACCESS_KEY
+      - JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRATION
+      - JWT_ACCESS_EXPIRATION
+      - MAX_SESSIONS_ALLOWED
+      - MSG_QUEUE_URL
+      - REDIS_URL
+      - EXCHANGE_NAME
+    env:
+      - name: NOTIFICATION_SERVICE_QUEUE
+        value: "notification_service"
+      - name: USER_SERVICE_QUEUE
+        value: "user_service"
+      - name: MONGO_URL
+        value: "mongodb://mongo-users:27020/users"
+  - name: vehicles
+    image: ghcr.io/Valt1-0/vehicles:latest
+    port: 5004
+    mongoPort: 27021
+    auth:
+      - JWT_ACCESS_KEY
+      - JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRATION
+      - JWT_ACCESS_EXPIRATION
+      - MAX_SESSIONS_ALLOWED
+      - MSG_QUEUE_URL
+      - REDIS_URL
+      - EXCHANGE_NAME
+    env:
+      - name: IMAGE_UPLOAD_PATH
+        value: "uploads/vehicles"
+      - name: IMAGE_BASE_URL
+        value: "http://localhost:5004/uploads/vehicles/"
+      - name: GATEWAY_URL
+        value: "http://localhost:5000"
+      - name: USER_SERVICE_QUEUE
+        value: "user_service"
+      - name: NOTIFICATION_SERVICE_QUEUE
+        value: "notification_service"
+  - name: maintains
+    image: ghcr.io/Valt1-0/maintains:latest
+    port: 5005
+    mongoPort: 27022
+    auth:
+      - JWT_ACCESS_KEY
+      - JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRATION
+      - JWT_ACCESS_EXPIRATION
+      - MAX_SESSIONS_ALLOWED
+      - MSG_QUEUE_URL
+      - REDIS_URL
+      - EXCHANGE_NAME
+    env:
+      - name: IMAGE_UPLOAD_PATH
+        value: "uploads/maintains"
+      - name: IMAGE_BASE_URL
+        value: "http://localhost:5005/uploads/maintains/"
+      - name: VEHICLE_SERVICE_URL
+        value: "http://localhost:5004"
+      - name: GATEWAY_URL
+        value: "http://localhost:5000"
+      - name: USER_SERVICE_QUEUE
+        value: "user_service"
+      - name: NOTIFICATION_SERVICE_QUEUE
+        value: "notification_service"
+  - name: mail
+    image: ghcr.io/Valt1-0/mail:latest
+    port: 5001
+    auth:
+      - EXCHANGE_NAME
+    env:
+      - name: IONOS_EMAIL
+        valueFrom:
+          secretKeyRef:
+            name: auth-secret
+            key: IONOS_EMAIL
+      - name: IONOS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: auth-secret
+            key: IONOS_PASSWORD
+      - name: NOTIFICATION_SERVICE_QUEUE
+        value: "notification_service"
+      - name: USER_SERVICE_QUEUE
+        value: "user_service"
+  - name: navigate
+    image: ghcr.io/Valt1-0/navigate:latest
+    port: 5006
+    mongoPort: 27022
+    auth:
+      - JWT_ACCESS_KEY
+      - JWT_REFRESH_KEY
+      - JWT_REFRESH_EXPIRATION
+      - JWT_ACCESS_EXPIRATION
+      - MAX_SESSIONS_ALLOWED
+      - MSG_QUEUE_URL
+      - REDIS_URL
+      - EXCHANGE_NAME
+    env:
+      - name: GATEWAY_URL
+        value: "http://localhost:5000"
+
 redis:
   image: redis:latest
   port: 6379
@@ -12,31 +172,3 @@ rabbitmq:
   managementPort: 15672
   user: user
   password: password
-
-gateway:
-  image: ghcr.io/Valt1-0/gateway:latest
-  port: 5000
-
-mail:
-  image: ghcr.io/Valt1-0/mail:latest
-  port: 5001
-
-auth:
-  image: ghcr.io/Valt1-0/auth:latest
-  port: 5002
-
-users:
-  image: ghcr.io/Valt1-0/users:latest
-  port: 5003
-
-vehicles:
-  image: ghcr.io/Valt1-0/vehicles:latest
-  port: 5004
-
-maintains:
-  image: ghcr.io/Valt1-0/maintains:latest
-  port: 5005
-
-navigate:
-  image: ghcr.io/Valt1-0/navigate:latest
-  port: 5006
