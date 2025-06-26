@@ -6,9 +6,10 @@ spec:
   selector:
     app: {{ .Values.containerName }}
   ports:
-{{- range .Values.service.ports }}
-    - port: {{ .host }}
-      targetPort: {{ .container }}
+{{- range $index, $port := .Values.service.ports }}
+    - name: port-{{ $index }}
+      port: {{ $port.host }}
+      targetPort: {{ $port.container }}
       protocol: TCP
 {{- end }}
   type: ClusterIP

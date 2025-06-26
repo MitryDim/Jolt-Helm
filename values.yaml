@@ -174,9 +174,8 @@ rabbitmq:
   password: password
 
 openrouteservice:
-image: openrouteservice:latest
 containerName: ors-app
-buildContext: ./
+image: local/openrouteservice:latest
 
 service:
   ports:
@@ -185,10 +184,6 @@ service:
     - host: 9001
       container: 9001
 
-resources: {}
-
 env: {}
-
 volumeMounts: []
-
 volumes: []
