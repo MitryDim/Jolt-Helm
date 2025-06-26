@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.containerName }}
+  name: {{ .Values.openrouteservice.containerName }}
 spec:
   selector:
-    app: {{ .Values.containerName }}
+    app: {{ .Values.openrouteservice.containerName }}
   ports:
-{{- range $index, $port := .Values.service.ports }}
+{{- range $index, $port := .Values.openrouteservice.service.ports }}
     - name: port-{{ $index }}
       port: {{ $port.host }}
       targetPort: {{ $port.container }}
       protocol: TCP
 {{- end }}
   type: ClusterIP
+

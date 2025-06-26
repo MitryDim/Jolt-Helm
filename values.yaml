@@ -184,6 +184,6 @@ openrouteservice:
       - host: 9001
         container: 9001
 
-env: {}
-volumeMounts: []
-volumes: []
+  env: {}
+  volumeMounts: []
+  volumes: []
