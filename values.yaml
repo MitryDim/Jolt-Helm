@@ -175,7 +175,7 @@ rabbitmq:
 
 openrouteservice:
 containerName: ors-app
-image: local/openrouteservice:latest
+image: image: ghcr.io/gis-ops/openrouteservice:latest
 
 service:
   ports:
