@@ -172,3 +172,23 @@ rabbitmq:
   managementPort: 15672
   user: user
   password: password
+
+openrouteservice:
+image: openrouteservice:latest
+containerName: ors-app
+buildContext: ./
+
+service:
+  ports:
+    - host: 8080
+      container: 8082
+    - host: 9001
+      container: 9001
+
+resources: {}
+
+env: {}
+
+volumeMounts: []
+
+volumes: []
