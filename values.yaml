@@ -73,8 +73,6 @@ microservices:
         value: "notification_service"
       - name: USER_SERVICE_QUEUE
         value: "user_service"
-      - name: MONGO_URL
-        value: "mongodb://mongo-users:27020/users"
   - name: vehicles
     image: ghcr.io/Valt1-0/vehicles:latest
     port: 5004
@@ -125,9 +123,10 @@ microservices:
         value: "user_service"
       - name: NOTIFICATION_SERVICE_QUEUE
         value: "notification_service"
-  - name: mail
-    image: ghcr.io/Valt1-0/mail:latest
+  - name: notifications
+    image: ghcr.io/Valt1-0/notifications:latest
     port: 5001
+    mongoPort: 27024
     auth:
       - EXCHANGE_NAME
     env:
@@ -148,7 +147,7 @@ microservices:
   - name: navigate
     image: ghcr.io/Valt1-0/navigate:latest
     port: 5006
-    mongoPort: 27022
+    mongoPort: 27023
     auth:
       - JWT_ACCESS_KEY
       - JWT_REFRESH_KEY
