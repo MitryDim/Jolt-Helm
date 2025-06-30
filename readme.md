@@ -191,7 +191,7 @@ env:
 
 ## 📄 Licence
 
-Projet sous licence MIT.
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus d’informations.
 
 ---
 
