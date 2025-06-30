@@ -171,3 +171,18 @@ rabbitmq:
   managementPort: 15672
   user: user
   password: password
+
+openrouteservice:
+  containerName: ors-app
+  image: ghcr.io/gis-ops/openrouteservice:latest
+
+  service:
+    ports:
+      - host: 8080
+        container: 8082
+      - host: 9001
+        container: 9001
+
+  env: {}
+  volumeMounts: []
+  volumes: []

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.openrouteservice.containerName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.openrouteservice.containerName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.openrouteservice.containerName }}
+    spec:
+      containers:
+        - name: {{ .Values.openrouteservice.containerName }}
+          image: {{ .Values.openrouteservice.image }}
+          ports:
+{{- range .Values.openrouteservice.service.ports }}
+            - containerPort: {{ .container }}
+{{- end }}
+          env:
+{{- range $key, $value := .Values.openrouteservice.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+{{- end }}
+          volumeMounts:
+{{- range .Values.openrouteservice.volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+{{- end }}
+      volumes:
+{{- range .Values.openrouteservice.volumes }}
+        - name: {{ .name }}
+{{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath }}
+{{- end }}
+{{- end }}
